@@ -6,10 +6,12 @@ import {
   query,
   serverTimestamp,
   where,
+  updateDoc,
+  doc,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { auth, db } from "../assets/firebase-config";
-
+console.log("auth", auth);
 function Chat(props) {
   const { room } = props;
   const [newMessage, setNewMessage] = useState("");
@@ -51,17 +53,27 @@ function Chat(props) {
     }
   };
 
+  const handleRightClick = async (e, email, id) => {
+    e.preventDefault(); // 阻止瀏覽器右鍵選單
+    if (auth.currentUser.email !== email) return;
+    await updateDoc(doc(db, "messages", id), {
+      text: "[已刪除]",
+      isDeleted: true,
+    });
+  };
+
   return (
-    <div className="container py-4" style={{ maxWidth: "600px" }}>
+    <div className="container py-4">
       <div className="card shadow-sm border-0">
         <div className="card-header bg-primary text-white fw-bold text-center">
           TechChat 聊天室
         </div>
         <div
           className="card-body"
-          style={{ height: "400px", overflowY: "auto" }}
+          style={{ height: "70vh", overflowY: "auto" }}
         >
           {messages.map((message) => {
+            console.log("message", message);
             let formattedDate = "尚未取得日期";
             if (message.createAt?.seconds) {
               const date = new Date(message.createAt.seconds * 1000);
@@ -81,8 +93,15 @@ function Chat(props) {
                     <span className="ms-2 small">{formattedDate}</span>
                   </div>
                 </div>
-                <div className="bg-light rounded p-2 display-inline-block">
-                  {message.text}
+                <div
+                  className={`bg-light rounded p-2 my-2 ${
+                    message.isDeleted ? "text-muted display-inline-block text-decoration-line-through bg-danger" : ""
+                  }`}
+                  onContextMenu={(e) =>
+                    handleRightClick(e, message.email, message.id)
+                  }
+                >
+                  {message.isDeleted ? "訊息已收回" : message.text}
                 </div>
               </div>
             );
