@@ -9,7 +9,6 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { auth, db } from "../assets/firebase-config";
-import { compose } from "@reduxjs/toolkit";
 
 function Chat(props) {
   const { room } = props;
@@ -63,16 +62,30 @@ function Chat(props) {
           style={{ height: "400px", overflowY: "auto" }}
         >
           {messages.map((message) => {
-              return (
-                <div key={message.id}>
-                  <div className="d-flex">
-                    <img src={message.photoURL} alt="userPhotoUrl" width={40} />
-                    <span>{message.user}</span>
+            let formattedDate = "尚未取得日期";
+            if (message.createAt?.seconds) {
+              const date = new Date(message.createAt.seconds * 1000);
+              formattedDate = date.toLocaleString(); // 避免非 Date 物件呼叫 toLocaleString
+            }
+            return (
+              <div key={message.id}>
+                <div className="d-flex align-items-start">
+                  <img
+                    src={message.photoURL}
+                    alt="userPhotoUrl"
+                    width={40}
+                    className="rounded-circle"
+                  />
+                  <div className="d-flex flex-column">
+                    <span className="ms-2 fw-bold">{message.user}</span>
+                    <span className="ms-2 small">{formattedDate}</span>
                   </div>
-                  <div>{message.text}</div>
                 </div>
-              );
-
+                <div className="bg-light rounded p-2 display-inline-block">
+                  {message.text}
+                </div>
+              </div>
+            );
           })}
         </div>
         <div className="card-footer">
