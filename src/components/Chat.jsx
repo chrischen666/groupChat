@@ -40,11 +40,10 @@ function Chat(props) {
     return () => unsubscribe();
   }, [room]);
 
-  // 新增訊息
+  // 新增訊息api
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-
       const messageData = {
         email: auth.currentUser.email,
         displayName: auth.currentUser.displayName,
@@ -55,7 +54,7 @@ function Chat(props) {
         room,
       };
       if (replyStatus) {
-        messageData.replyData = relayData;
+        messageData.replyData = replyData;
         setReplyStatus(false);
       }
       await addDoc(messageRef, messageData);
@@ -65,7 +64,7 @@ function Chat(props) {
     }
   };
 
-  // 收回訊息
+  // 收回訊息api
   const handleRecallMessage = async (e, email, id) => {
     e.preventDefault();
     if (auth.currentUser.email !== email) return;
@@ -75,8 +74,8 @@ function Chat(props) {
     });
   };
 
-  const [replyData, setReplyData] = useState("");
   //回覆訊息
+  const [replyData, setReplyData] = useState("");
   const handleReplyMessage = (e, message) => {
     e.preventDefault();
     setReplyStatus(true);
@@ -94,17 +93,21 @@ function Chat(props) {
           style={{ height: "70vh", overflowY: "auto" }}
         >
           {messages.map((message) => {
-            console.log("message", message);
             let formattedDate = "取得日期中...";
+            let replyDate = "取得日期中...";
             if (message.createAt?.seconds) {
               const date = new Date(message.createAt.seconds * 1000);
               formattedDate = date.toLocaleString(); // 避免非 Date 物件呼叫 toLocaleString
+            }
+              if (message.replyData?.createAt?.seconds) {
+              const date = new Date(message.replyData?.createAt?.seconds * 1000);
+              replyDate = date.toLocaleString(); // 避免非 Date 物件呼叫 toLocaleString
             }
             return (
               <div key={message.id}>
                 {message.replyData && (
                   <div className="d-flex align-items-start">
-                    <i class="bi bi-arrow-90deg-right"></i>
+                    <i className="bi bi-arrow-90deg-right"></i>
                     <img
                       src={message.replyData.photoURL}
                       alt="userPhotoUrl"
@@ -116,7 +119,7 @@ function Chat(props) {
                         {message.replyData.user}
                       </span>
                       <span className="ms-2 small fw-light">
-                        {formattedDate}
+                        {replyDate}
                       </span>
                     </div>
                   </div>
@@ -151,7 +154,7 @@ function Chat(props) {
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                           >
-                            <i class="bi bi-three-dots-vertical"></i>
+                            <i className="bi bi-three-dots-vertical"></i>
                           </button>
                           <ul className="dropdown-menu">
                             {auth.currentUser.email === message.email && (
@@ -198,9 +201,9 @@ function Chat(props) {
         <div className="card-footer">
           {replyStatus && (
             <div className="form-control">
-              回覆 <span className="fw-bold me-1">{replyData.relayName}</span>
+              回覆 <span className="fw-bold me-1">{replyData.user}</span>
               <a onClick={() => setReplyStatus(false)}>
-                <i class="bi bi-x-lg"></i>
+                <i className="bi bi-x-lg"></i>
               </a>
             </div>
           )}

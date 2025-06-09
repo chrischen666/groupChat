@@ -1,8 +1,6 @@
 import { signInWithPopup } from "firebase/auth";
-import { auth, provider, db } from "../assets/firebase-config";
+import { auth, provider } from "../assets/firebase-config";
 import Cookies from "universal-cookie";
-// import { serverTimestamp, setDoc, doc } from "firebase/firestore";
-console.log('auth',auth);
 export const Auth = (props) => {
   const { setIsAuth } = props;
   const cookies = new Cookies();
@@ -10,37 +8,8 @@ export const Auth = (props) => {
   const signInWithGoogle = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
-      console.log("result", result);
-
-      const { user } = result; // ✅ 正確取得使用者資料
-      cookies.set("auth-token", user.refreshToken); // ✅ 設定 token cookie
-
-      // const userRef = doc(db, "users", user.uid);
-      // await setDoc(
-      //   userRef,
-      //   {
-      //     uid: user.uid,
-      //     displayName: user.displayName || "匿名使用者",
-      //     email: user.email,
-      //     photoURL: user.photoURL || null,
-      //     lastLogin: serverTimestamp(),
-      //   },
-      //   { merge: true }
-      // );
-
-      // 錯誤例子應該要儲存到 server 端
-      // if (result.user.photoURL) {
-      //   localStorage.setItem("userPhotoUrl", result.user.photoURL);
-      //   console.log(
-      //     "使用者頭像 URL 已儲存到 localStorage:",
-      //     result.user.photoURL
-      //   );
-      // } else {
-      //   localStorage.removeItem("userPhotoUrl"); // 如果沒有頭像，確保移除舊的
-      //   console.log(
-      //     "使用者沒有提供頭像 URL，LocalStorage 中的舊頭像 URL 已清除。"
-      //   );
-      // }
+      const { user } = result; // 正確取得使用者資料
+      cookies.set("auth-token", user.refreshToken); //  設定 token cookie
       setIsAuth(true);
     } catch (error) {
       console.error(error);
