@@ -1,12 +1,33 @@
-# React + Vite
+# 💬 聊天室應用程式
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+這是一個簡單且互動性十足的聊天室應用程式，讓使用者可以即時對話、回覆特定訊息，並能收回已傳送的訊息。
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 功能特色
 
-## Expanding the ESLint configuration
+- ✅ **即時訊息傳送**  
+  使用者可以即時傳送文字訊息，並立即在聊天室中看到對話內容。
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- 🔁 **訊息回覆功能**  
+  支援針對特定訊息進行回覆，讓對話脈絡更清晰，方便追蹤討論串。
+
+- ❌ **訊息收回功能**  
+  使用者可以收回自己已發送的訊息，收回後會留下「訊息已收回」的標記，確保對話記錄的透明度。
+
+- 🔄 **即時渲染對話**  
+  所有訊息的傳送、回覆與收回都能即時更新，提供流暢的互動體驗。
+
+---
+
+## 🛠 技術棧
+
+| 類別       | 技術       |
+|------------|------------|
+| 前端框架   | React.js   |
+| 即時後端服務 | Firebase（Firestore, Authentication） |
+| 開發工具   | Vite       |
+
+---
+
+## 📁 專案結構
