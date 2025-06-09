@@ -1,0 +1,24 @@
+.message {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  position: relative;
+}
+
+.chat-hover {
+  padding: 8px;
+}
+
+.btn-group {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+  margin-left: 8px;
+}
+
+/* 關鍵：hover 效果 */
+.chat-hover:hover > .btn-group,
+.btn-group:hover {
+  opacity: 1;
+  visibility: visible;
+}
