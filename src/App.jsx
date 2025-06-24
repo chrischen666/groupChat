@@ -8,6 +8,7 @@ function App() {
   const [isAuth, setIsAuth] = useState(cookies.get("auth-token"));
   const [room, setRoom] = useState(null);
   const [enterCode, setEnderCode] = useState(null);
+  // auth為空則渲染Auth元件
   if (!isAuth) {
     return (
       <>
@@ -18,7 +19,7 @@ function App() {
   return (
     <>
       {room ? (
-        <Chat room={room} />
+        <Chat room={room} />  
       ) : (
         <div className="container d-flex vh-100 justify-content-center align-items-center">
           <div

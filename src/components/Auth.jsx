@@ -4,14 +4,14 @@ import Cookies from "universal-cookie";
 export const Auth = (props) => {
   const { setIsAuth } = props;
   const cookies = new Cookies();
-  // signInWithPopup 是一個在網路應用程式中常見的使用者認證 (Authentication) 方法
+  // signInWithPopup 是 Firebase 提供的登入方法，使用 Google 帳號進行彈出式登入視窗
   const signInWithGoogle = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const { user } = result; // 正確取得使用者資料
       cookies.set("auth-token", user.refreshToken); //  設定 token cookie
-      setIsAuth(true);
-    } catch (error) {
+      setIsAuth(true);  
+    } catch (error) { 
       console.error(error);
     }
   };

@@ -16,12 +16,15 @@ import { useAutoScroll } from "../hooks/useAutoScroll";
 function Chat(props) {
   const { room } = props;
   const [newMessage, setNewMessage] = useState("");
+  // 指定 Firebase Firestore 資料庫中的 "messages" 這個 collection（資料集合）
   const messageRef = collection(db, "messages");
   const [messages, setMessages] = useState([]);
+  // 回覆狀態
   const [replyStatus, setReplyStatus] = useState(false);
+  // 傳入依賴：每次 messages 更新會觸發滾動
+  const bottomRef = useAutoScroll([messages]);
 
-  const bottomRef = useAutoScroll([messages]); // 傳入依賴：每次 messages 更新會觸發滾動
-
+  // 撈出此聊天室的訊息，並照 createAt 排序
   useEffect(() => {
     const queryMessage = query(
       messageRef,
@@ -29,7 +32,7 @@ function Chat(props) {
       orderBy("createAt")
     );
 
-    // 監聽訊息
+    // 使用 onSnapshot() 即時監聽 Firestore 的變化
     const unsubscribe = onSnapshot(queryMessage, (snapshot) => {
       const msgData = snapshot.docs.map((doc) => ({
         ...doc.data(),
@@ -57,7 +60,8 @@ function Chat(props) {
         messageData.replyData = replyData;
         setReplyStatus(false);
       }
-      await addDoc(messageRef, messageData);
+      const res = await addDoc(messageRef, messageData);
+      console.log(res);
       setNewMessage("");
     } catch (error) {
       console.log(error);
@@ -69,7 +73,7 @@ function Chat(props) {
     e.preventDefault();
     if (auth.currentUser.email !== email) return;
     await updateDoc(doc(db, "messages", id), {
-      text: "[已刪除]",
+      // text: "[已刪除]",
       isDeleted: true,
     });
   };
@@ -99,8 +103,10 @@ function Chat(props) {
               const date = new Date(message.createAt.seconds * 1000);
               formattedDate = date.toLocaleString(); // 避免非 Date 物件呼叫 toLocaleString
             }
-              if (message.replyData?.createAt?.seconds) {
-              const date = new Date(message.replyData?.createAt?.seconds * 1000);
+            if (message.replyData?.createAt?.seconds) {
+              const date = new Date(
+                message.replyData?.createAt?.seconds * 1000
+              );
               replyDate = date.toLocaleString(); // 避免非 Date 物件呼叫 toLocaleString
             }
             return (
@@ -118,9 +124,7 @@ function Chat(props) {
                       <span className="ms-2  fs-5 ">
                         {message.replyData.user}
                       </span>
-                      <span className="ms-2 small fw-light">
-                        {replyDate}
-                      </span>
+                      <span className="ms-2 small fw-light">{replyDate}</span>
                     </div>
                   </div>
                 )}
